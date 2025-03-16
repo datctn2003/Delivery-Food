@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,19 +39,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
-        WindowInsetsControllerCompat windowInsetsController =
-                getInsetsController(getWindow(), getWindow().getDecorView());
-        ViewCompat.setOnApplyWindowInsetsListener(
-                getWindow().getDecorView(),
-                (view, windowInsets) -> {
-
-                    windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars());
-                    return ViewCompat.onApplyWindowInsets(view, windowInsets);
-                });
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.white));
-        }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(binding.getRoot());
         managmentCart= new ManagmentCart(this);
         getBundleExtra();
@@ -59,8 +49,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
-
-
     private void setBlurEffect() {
         float radius=10f;
         View decorView=(this).getWindow().getDecorView();

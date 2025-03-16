@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -56,7 +57,9 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.google.android.material:material:1.9.0")
-    implementation ("com.google.firebase:firebase-auth:22.0.0") // Hoặc phiên bản mới nhất
-    implementation ("com.google.firebase:firebase-core:20.1.0")
+    implementation ("com.google.firebase:firebase-auth:22.0.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+
 }

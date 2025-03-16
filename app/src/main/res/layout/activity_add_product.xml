@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+    android:padding="16dp">
+
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="24dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/back" />
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="377dp"
+        android:layout_height="48dp"
+        android:hint="Tên sản phẩm" />
+
+    <EditText
+        android:id="@+id/editPrice"
+        android:layout_width="377dp"
+        android:layout_height="48dp"
+        android:hint="Giá sản phẩm"
+        android:inputType="numberDecimal" />
+    <EditText
+        android:id="@+id/editCategory"
+        android:layout_width="377dp"
+        android:layout_height="48dp"
+        android:hint="Danh mục sản phẩm"
+        android:textColor="@color/white" />
+
+
+    <Button
+        android:id="@+id/btnChooseImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn ảnh"
+        android:layout_gravity="center"/>
+
+    <ImageView
+        android:id="@+id/productImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"/>
+
+
+    <Button
+        android:id="@+id/btnAddProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thêm sản phẩm"
+        android:layout_gravity="center"
+        android:backgroundTint="@android:color/holo_green_dark"/>
+</LinearLayout>

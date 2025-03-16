@@ -244,9 +244,11 @@
                 android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Place Order"
+                android:text="Place to payment"
                 android:fontFamily="@font/lobster"
-                android:textSize="18sp"/>
+                android:textSize="18sp"
+                android:onClick="onPlaceOrderClicked"/> <!-- Gán sự kiện xử lý -->
+
         </LinearLayout>
 
     </ScrollView>

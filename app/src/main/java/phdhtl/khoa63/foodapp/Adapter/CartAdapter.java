@@ -27,57 +27,71 @@ import phdhtl.khoa63.foodapp.Helper.ManagmentCart;
 import phdhtl.khoa63.foodapp.R;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
-    ArrayList<Foods> listItemSelected;
+    private ArrayList<Foods> listItemSelected;
     private ManagmentCart managmentCart;
-    ChangeNumberItemsListener changeNumberItemsListener;
+    private ChangeNumberItemsListener changeNumberItemsListener;
+    private boolean isPurchasedMode;
 
-    public CartAdapter(ArrayList<Foods> listItemSelected, Context context, ChangeNumberItemsListener changeNumberItemsListener) {
+    public CartAdapter(ArrayList<Foods> listItemSelected, Context context, ChangeNumberItemsListener changeNumberItemsListener, boolean isPurchasedMode) {
         this.listItemSelected = listItemSelected;
         this.managmentCart = new ManagmentCart(context);
         this.changeNumberItemsListener = changeNumberItemsListener;
+        this.isPurchasedMode = isPurchasedMode;
     }
 
     @NonNull
     @Override
     public CartAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View inflate= LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_cart,parent,false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_cart, parent, false);
         return new Viewholder(inflate);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CartAdapter.Viewholder holder, int position) {
-        float radius=10f;
-        View decorView=((Activity)holder.itemView.getContext()).getWindow().getDecorView();
-        ViewGroup rootView=(ViewGroup) decorView.findViewById(android.R.id.content);
-        Drawable windowBackground=decorView.getBackground();
-        holder.blurView.setupWith(rootView,new RenderScriptBlur(holder.itemView.getContext()))
+        Foods item = listItemSelected.get(position);
+
+        // Áp dụng hiệu ứng mờ
+        float radius = 10f;
+        View decorView = ((Activity) holder.itemView.getContext()).getWindow().getDecorView();
+        ViewGroup rootView = decorView.findViewById(android.R.id.content);
+        Drawable windowBackground = decorView.getBackground();
+        holder.blurView.setupWith(rootView, new RenderScriptBlur(holder.itemView.getContext()))
                 .setFrameClearDrawable(windowBackground)
                 .setBlurRadius(radius);
         holder.blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         holder.blurView.setClipToOutline(true);
+
+        // Hiển thị thông tin sản phẩm
         Glide.with(holder.itemView.getContext())
-                .load(listItemSelected.get(position).getImagePath())
-                .transform(new CenterCrop(),new RoundedCorners(30))
+                .load(item.getImagePath())
+                .transform(new CenterCrop(), new RoundedCorners(30))
                 .into(holder.pic);
 
-        holder.title.setText(listItemSelected.get(position).getTitle());
-        holder.feeEachItem.setText("$"+listItemSelected.get(position).getPrice());
-        holder.totalEachItem.setText(listItemSelected.get(position).getNumberInCart()+"+*$"+(listItemSelected.get(position).getNumberInCart()*listItemSelected.get(position).getPrice()));
+        holder.title.setText(item.getTitle());
+        holder.feeEachItem.setText("$" + item.getPrice());
+        holder.totalEachItem.setText(item.getNumberInCart() + " x $" + item.getPrice());
 
-        holder.num.setText(String.valueOf(listItemSelected.get(position).getNumberInCart()));
-        holder.plusItem.setOnClickListener(v ->
-                managmentCart.plusNumberItem(listItemSelected, position, () ->{
-                            changeNumberItemsListener.change();
-                            notifyDataSetChanged();
-                        }));
+        holder.num.setText(String.valueOf(item.getNumberInCart()));
 
-        holder.minusItem.setOnClickListener(v ->
-                managmentCart.minusNumberItem(listItemSelected, position, () ->{
+        // Nếu là chế độ đã mua, ẩn các nút chỉnh sửa số lượng
+        if (isPurchasedMode) {
+            holder.plusItem.setVisibility(View.GONE);
+            holder.minusItem.setVisibility(View.GONE);
+        } else {
+            holder.plusItem.setOnClickListener(v -> {
+                managmentCart.plusNumberItem(listItemSelected, position, () -> {
                     changeNumberItemsListener.change();
                     notifyDataSetChanged();
-                }));
+                });
+            });
 
+            holder.minusItem.setOnClickListener(v -> {
+                managmentCart.minusNumberItem(listItemSelected, position, () -> {
+                    changeNumberItemsListener.change();
+                    notifyDataSetChanged();
+                });
+            });
+        }
     }
 
     @Override
@@ -85,22 +99,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
         return listItemSelected.size();
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder {
-        TextView title,feeEachItem,plusItem,minusItem;
+    public static class Viewholder extends RecyclerView.ViewHolder {
+        TextView title, feeEachItem, plusItem, minusItem, totalEachItem, num;
         ImageView pic;
-        TextView totalEachItem,num;
         BlurView blurView;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            title=itemView.findViewById(R.id.titleTxt);
-            pic= itemView.findViewById(R.id.pic);
-            feeEachItem=itemView.findViewById(R.id.feeEachItem);
-            totalEachItem=itemView.findViewById(R.id.totalEachItem);
-            plusItem=itemView.findViewById(R.id.plusBtn);
-            minusItem=itemView.findViewById(R.id.minusBtn);
-            num=itemView.findViewById(R.id.numTxt);
-            blurView=itemView.findViewById(R.id.blurView);
+            title = itemView.findViewById(R.id.titleTxt);
+            pic = itemView.findViewById(R.id.pic);
+            feeEachItem = itemView.findViewById(R.id.feeEachItem);
+            totalEachItem = itemView.findViewById(R.id.totalEachItem);
+            plusItem = itemView.findViewById(R.id.plusBtn);
+            minusItem = itemView.findViewById(R.id.minusBtn);
+            num = itemView.findViewById(R.id.numTxt);
+            blurView = itemView.findViewById(R.id.blurView);
         }
     }
 }

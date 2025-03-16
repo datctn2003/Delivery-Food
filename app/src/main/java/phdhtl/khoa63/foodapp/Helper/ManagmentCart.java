@@ -63,5 +63,9 @@ public class ManagmentCart {
         tinyDB.putListObject("CartList",listItem);
         changeNumberItemsListener.change();
     }
+    public void clearCart() {
+        tinyDB.remove("CartList"); // Xóa dữ liệu giỏ hàng khỏi TinyDB
+    }
+
 
 }

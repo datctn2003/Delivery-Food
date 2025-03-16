@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+    android:padding="16dp">
+    <ImageView
+        android:id="@+id/backout"
+        android:layout_width="24dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/back" />
+
+
+
+    <!-- Ảnh sản phẩm -->
+    <ImageView
+        android:id="@+id/productImageView"
+        android:layout_width="260dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <!-- Nút chọn ảnh mới -->
+    <Button
+        android:id="@+id/btnChooseImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select new photo"
+        android:layout_gravity="center"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="10dp"/>
+
+    <!-- Tên sản phẩm -->
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Product Name"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
+
+    <!-- Giá sản phẩm -->
+    <EditText
+        android:id="@+id/editPrice"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Price"
+        android:textColor="@color/white"
+        android:inputType="numberDecimal"
+        android:textSize="16sp"/>
+
+    <!-- Danh mục sản phẩm (nếu có) -->
+    <EditText
+        android:id="@+id/editCategory"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Product Catalog"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
+
+    <!-- Nút Lưu -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_gravity="center"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

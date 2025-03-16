@@ -61,22 +61,22 @@
             android:textSize="18sp"
             android:textColor="@color/white"/>
 
-
         <Button
-            android:id="@+id/creditCardBtn"
+            android:id="@+id/zaloPayBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pay with Credit Card"
+            android:text="Pay with ZaloPay"
             android:fontFamily="@font/lobster"
             android:layout_marginTop="16dp"/>
 
         <Button
-            android:id="@+id/payOnDeliveryBtn"
+            android:id="@+id/momoPayBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pay on Delivery"
+            android:text="Pay with MoMo"
             android:fontFamily="@font/lobster"
             android:layout_marginTop="16dp"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

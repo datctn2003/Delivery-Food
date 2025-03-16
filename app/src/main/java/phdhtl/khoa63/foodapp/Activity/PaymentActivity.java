@@ -1,29 +1,36 @@
 package phdhtl.khoa63.foodapp.Activity;
 
-import static androidx.core.view.WindowCompat.getInsetsController;
-
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import phdhtl.khoa63.foodapp.Adapter.CartAdapter;
+import phdhtl.khoa63.foodapp.Admin.Order;
+import phdhtl.khoa63.foodapp.Domain.Category;
 import phdhtl.khoa63.foodapp.Helper.ManagmentCart;
+import phdhtl.khoa63.foodapp.Domain.Foods;
 import phdhtl.khoa63.foodapp.R;
 
 public class PaymentActivity extends AppCompatActivity {
@@ -32,79 +39,109 @@ public class PaymentActivity extends AppCompatActivity {
     private RecyclerView cartRecyclerView;
     private CartAdapter cartAdapter;
     private TextView totalAmountText;
+    private Button zaloPayBtn, momoPayBtn;
+    private ImageView backButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-        WindowInsetsControllerCompat windowInsetsController =
-                getInsetsController(getWindow(), getWindow().getDecorView());
-        ViewCompat.setOnApplyWindowInsetsListener(
-                getWindow().getDecorView(),
-                (view, windowInsets) -> {
 
-                    windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars());
-                    return ViewCompat.onApplyWindowInsets(view, windowInsets);
-                });
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.white));
-        }
-
-        // Khởi tạo các thành phần giao diện
+        // Ánh xạ UI
         totalAmountText = findViewById(R.id.totalAmountText);
         cartRecyclerView = findViewById(R.id.cartRecyclerView);
-        Button creditCardBtn = findViewById(R.id.creditCardBtn);
-        Button payOnDeliveryBtn = findViewById(R.id.payOnDeliveryBtn);
-        ImageView backButton = findViewById(R.id.back);
+        zaloPayBtn = findViewById(R.id.zaloPayBtn);
+        momoPayBtn = findViewById(R.id.momoPayBtn);
+        backButton = findViewById(R.id.back);
 
-        // Khởi tạo ManagmentCart
+        // Kiểm tra xem các thành phần UI có bị null không
+        if (totalAmountText == null || cartRecyclerView == null || zaloPayBtn == null || momoPayBtn == null || backButton == null) {
+            Log.e("PaymentActivity", "Một trong các View bị null! Kiểm tra ID trong XML.");
+            return;
+        }
+
+        // Quản lý giỏ hàng
         managmentCart = new ManagmentCart(this);
+        List<Foods> cartList = managmentCart.getListCart();
 
-        // Lấy giá trị tổng số tiền từ CartActivity
+        // Nhận tổng tiền từ Intent
         totalAmount = getIntent().getDoubleExtra("totalAmount", 0.0);
-
-        // Hiển thị tổng tiền với 2 chữ số sau dấu phẩy
-        DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        totalAmountText.setText("Total Amount: $" + decimalFormat.format(totalAmount));
-
-        // Thiết lập RecyclerView cho giỏ hàng
+        DecimalFormat decimalFormat = new DecimalFormat("$#,###.00");
+        totalAmountText.setText("Total Amount: " + decimalFormat.format(totalAmount));
+        // Hiển thị danh sách sản phẩm trong giỏ hàng
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        cartAdapter = new CartAdapter(managmentCart.getListCart(), this, () -> {});
+        cartAdapter = new CartAdapter((ArrayList<Foods>) cartList, this, () -> {}, false);
+
         cartRecyclerView.setAdapter(cartAdapter);
 
-        // Thiết lập sự kiện cho các nút thanh toán
-        creditCardBtn.setOnClickListener(v -> handleCreditCardPayment());
-        payOnDeliveryBtn.setOnClickListener(v -> handleCashOnDelivery());
+        // Xử lý khi giỏ hàng trống
+        if (cartList.isEmpty()) {
+            Toast.makeText(this, "Giỏ hàng trống, hãy thêm sản phẩm!", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
-        // Thiết lập sự kiện nhấp cho nút quay lại
+        // Sự kiện khi bấm nút thanh toán
+        zaloPayBtn.setOnClickListener(v -> handleZaloPayPayment());
+        momoPayBtn.setOnClickListener(v -> handleMomoPayment());
+
+        // Nút quay lại
         backButton.setOnClickListener(v -> finish());
     }
 
-    private void handleCreditCardPayment() {
-        String paymentMethod = "Credit Card";
-        Toast.makeText(this, "Processing credit card payment...", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(PaymentActivity.this, OrderConfirmationActivity.class);
-        intent.putExtra("orderStatus", "success");
-        intent.putExtra("paymentMethod", paymentMethod);
-        intent.putExtra("totalAmount", totalAmount); // Thêm dòng này để truyền tổng số tiền
-        intent.putExtra("productDetails", (Serializable) managmentCart.getListCart());
+    private void handleZaloPayPayment() {
+        Toast.makeText(this, "Đang chuyển hướng đến ZaloPay...", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+       // intent.setData(Uri.parse("https://sandbox.zalopay.vn/")); // Chuyển hướng ZaloPay
         startActivity(intent);
-        finish();
+
+        // Gọi xử lý thanh toán
+        processPayment("ZaloPay");
     }
 
-    private void handleCashOnDelivery() {
-        String paymentMethod = "Cash on Delivery";
-        Toast.makeText(this, "Cash on delivery selected. Thank you!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(PaymentActivity.this, OrderConfirmationActivity.class);
-        intent.putExtra("orderStatus", "success");
-        intent.putExtra("paymentMethod", paymentMethod);
-        intent.putExtra("totalAmount", totalAmount); // Thêm dòng này để truyền tổng số tiền
-        intent.putExtra("productDetails", (Serializable) managmentCart.getListCart());
+    private void handleMomoPayment() {
+        Toast.makeText(this, "Đang chuyển hướng đến MoMo...", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+       // intent.setData(Uri.parse("https://momo.vn/")); // Chuyển hướng MoMo
         startActivity(intent);
-        finish();
+
+        // Gọi xử lý thanh toán
+     processPayment("MoMo");
     }
 
+    private void processPayment(String method) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Bạn chưa đăng nhập!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<Foods> cartItems = managmentCart.getListCart();
+        if (cartItems.isEmpty()) {
+            Toast.makeText(this, "Giỏ hàng trống!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String orderId = FirebaseDatabase.getInstance().getReference("Orders").push().getKey();
+        if (orderId == null) return;
+
+        Order order = new Order(orderId, user.getUid(), cartItems, totalAmount, method, "Đã thanh toán");
+
+        FirebaseDatabase.getInstance().getReference("Orders").child(orderId).setValue(order)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(PaymentActivity.this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
+
+                    managmentCart.clearCart(); // ✅ Xóa giỏ hàng sau khi thanh toán
+
+                    Intent intent = new Intent(PaymentActivity.this, PurchasedProductsActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(PaymentActivity.this, "Lỗi khi lưu đơn hàng!", Toast.LENGTH_SHORT).show());
+    }
 
 
 }

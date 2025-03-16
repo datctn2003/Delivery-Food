@@ -100,8 +100,6 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-
-
     private void initCategory() {
         DatabaseReference myRef = database.getReference("Category");
         binding.progressBarCategory.setVisibility(View.VISIBLE);

@@ -24,6 +24,9 @@
       <entry key="MainActivity">
         <State />
       </entry>
+      <entry key="RegisterActivity">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>

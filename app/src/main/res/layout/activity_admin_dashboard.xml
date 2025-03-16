@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/bg"
+    tools:context=".Admin.AdminDashboardActivity">
+
+    <!-- Logout Button trên góc phải -->
+    <ImageView
+        android:id="@+id/logout"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/logout"
+        android:contentDescription="Logout" />
+
+
+    <!-- Tiêu đề Admin Dashboard -->
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Admin Dashboard"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <!-- Thống kê -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_below="@id/logout">
+
+        <TextView
+            android:id="@+id/txtTotalProducts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product: 0"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple_200"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/txtTotalOrders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order: 0"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/teal_200"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/txtTotalUsers"
+            android:layout_width="124dp"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Users: 0"
+            android:textColor="@color/orange"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Biểu đồ PieChart -->
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/txtTotalUsers"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"/>
+
+    <!-- Nút quản lý -->
+
+    <Button
+        android:id="@+id/btnManageProducts"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pieChart"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="7dp"
+        android:backgroundTint="@color/purple_200"
+        android:text="Product Management"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/btnManageOrders"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnManageProducts"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/teal_200"
+        android:text="Order Management"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/btnManageUsers"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnManageOrders"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/orange"
+        android:text="User Management"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>
